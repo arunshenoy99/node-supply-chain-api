@@ -29,11 +29,11 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default: false
     },
-    warehouses: [{
-        warehouse: {
-            type: mongoose.Schema.Types.ObjectId
-        }
-    }],
+    // warehouses: [{
+        // warehouse: {
+            // type: mongoose.Schema.Types.ObjectId
+        // }
+    // }],
     tokens: [{
         token: {
             type: String,

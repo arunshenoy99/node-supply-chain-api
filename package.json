@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
     "mongoose": "^5.8.11",
     "validator": "^12.2.0"
   },
