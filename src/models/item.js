@@ -54,7 +54,8 @@ const itemSchema = new mongoose.Schema({
         required: true
     },
     locatedAt: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Warehouse'
     }
 }, {
     timestamps: true

@@ -41,7 +41,8 @@ const warehouseSchema = new mongoose.Schema({
         }
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     timestamps: true

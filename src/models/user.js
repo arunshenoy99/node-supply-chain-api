@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Warehouse = require('../models/warehouse')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -82,6 +83,12 @@ userSchema.statics.findByCredentials = async (email, password) => {
    
     return user
 }
+
+userSchema.pre('remove', async function (next) {
+    const user = this
+    const warehouses = await Warehouse.updateMany({owner: user._id}, {owner: undefined})
+    next()
+})
 
 const User = mongoose.model('User', userSchema)
 
