@@ -25,6 +25,7 @@ const warehouseSchema = new mongoose.Schema({
     },
     leasePeriod: {
         type: String,
+        trim: true,
         validate (value) {
             if (!moment(value, 'YYYY-MM-DD').isValid()) {
                 throw new Error('Please enter a valid date in YYYY-MM-DD format')
@@ -39,12 +40,11 @@ const warehouseSchema = new mongoose.Schema({
             } 
         }
     },
-    // items: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    // },
     owner: {
         type: mongoose.Schema.Types.ObjectId
     }
+}, {
+    timestamps: true
 })
 
 const Warehouse = mongoose.model('Warehouse', warehouseSchema)
