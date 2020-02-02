@@ -29,7 +29,7 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
-//Create user avatar
+//Create user avatar( upload profile photo )
 const upload = multer({
     limits: {
         fileSize: 1000000
@@ -52,7 +52,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
 })
 
 //Modify user data
-router.patch('/users', auth, async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
     const allowedUpdates = ['name', 'email', 'password']
     const updates = Object.keys(req.body)
     const isValid = updates.every((update) => allowedUpdates.includes(update))
@@ -71,7 +71,7 @@ router.patch('/users', auth, async (req, res) => {
 })
 
 //Delete user
-router.delete('user', auth, async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
     try {
         await req.user.remove()
         res.send()
@@ -100,6 +100,20 @@ router.post('/users/logoutAll', auth, async(req, res) => {
     } catch (e) {
         res.status(500).send()
     }
+})
+
+//Get user profile
+router.get('/users/me', auth, (req, res) => {
+    res.send(req.user)
+})
+
+//Get user avatar
+router.get('/users/me/avatar', auth, async (req, res) => {
+    if (!req.user.avatar) {
+        return res.status(404).send()
+    }
+    res.setHeader('Content-Type', 'image/png')
+    res.send(req.user.avatar)
 })
 
 module.exports = router
