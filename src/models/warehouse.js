@@ -10,14 +10,12 @@ const warehouseSchema = new mongoose.Schema({
     },
     location: {
         latitude: {
-            type: String,
-            required: true,
-            trim: true
+            type: Number,
+            required: true
         },
         longitude: {
-            type: String,
-            required: true,
-            trim: true
+            type: Number,
+            required: true
         }
     },
     size: {
@@ -27,7 +25,7 @@ const warehouseSchema = new mongoose.Schema({
         type: String,
         trim: true,
         validate (value) {
-            if (!moment(value, 'YYYY-MM-DD').isValid()) {
+            if (!moment(value, 'YYYY-MM-DD', true).isValid()) {
                 throw new Error('Please enter a valid date in YYYY-MM-DD format')
             }
         }
