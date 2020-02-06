@@ -2,6 +2,7 @@ const express = require('express')
 const Warehouse = require('../models/warehouse')
 const auth = require('../middleware/auth')
 const geocode = require('../utils/geocode')
+const wareHousesValidity = require('../utils/warehousesValidity')
 
 const router = new express.Router()
 
@@ -27,6 +28,15 @@ router.get('/warehouses', auth, async (req, res) => {
             path: 'warehouses'
         }).execPopulate()
         res.send(req.user.warehouses)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+router.get('/warehouses/validity', auth, async (req, res) => {
+    try {
+        const dueDates = await wareHousesValidity(req.user, req.query.format)
+        res.send(dueDates)
     } catch (e) {
         res.status(500).send()
     }
