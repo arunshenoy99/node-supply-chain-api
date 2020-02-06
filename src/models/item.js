@@ -69,10 +69,9 @@ const itemSchema = new mongoose.Schema({
 
 itemSchema.methods.generateBarCode = async function () {
     const item = this
-    const itemObject = JSON.stringify({name: item.name, category: item.category, warehouse: item.warehouse})
     const canvas = createCanvas()
-    JSBarCode(canvas, itemObject)
-    const buffer = await sharp(canvas.toBuffer()).resize({ width: 300, height: 300 }).png().toBuffer()
+    JSBarCode(canvas, item._id)
+    const buffer = await sharp(canvas.toBuffer()).png().toBuffer()
     return buffer
 }
 
