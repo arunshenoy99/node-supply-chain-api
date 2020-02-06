@@ -51,6 +51,12 @@ userSchema.virtual('warehouses', {
     foreignField: 'owner'
 })
 
+userSchema.virtual('items', {
+    ref: 'Item',
+    localField: '_id',
+    foreignField: 'buyer'
+})
+
 userSchema.pre('save', async function (next) {
     const user = this
     if (user.isModified('password')) {

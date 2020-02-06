@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 const { createCanvas } = require('canvas')
 const JSBarCode = require('jsbarcode')
+const sharp = require('sharp')
 
 const itemSchema = new mongoose.Schema({
     name: {
@@ -56,10 +57,36 @@ const itemSchema = new mongoose.Schema({
     locatedAt: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Warehouse'
+    },
+    buyer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     timestamps: true
 })
+
+
+itemSchema.methods.generateBarCode = async function () {
+    const item = this
+    const itemObject = JSON.stringify({name: item.name, category: item.category, warehouse: item.warehouse})
+    const canvas = createCanvas()
+    JSBarCode(canvas, itemObject)
+    const buffer = await sharp(canvas.toBuffer()).resize({ width: 300, height: 300 }).png().toBuffer()
+    return buffer
+}
+
+itemSchema.methods.toJSON = function () {
+    const item = this
+    const itemObject = item.toObject()
+
+    delete itemObject.barcode,
+    delete itemObject.locatedAt,
+    delete itemObject.buyer,
+    delete itemObject.image
+
+    return itemObject
+}
 
 const Item = mongoose.model('Item', itemSchema)
 

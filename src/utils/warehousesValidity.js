@@ -7,6 +7,9 @@ const warehousesValidity = async (user, format) => {
     }
     const dueDates = []
     const warehouses = await Warehouse.find({ owner: user._id })
+    if (warehouses.length == 0) {
+        throw new Error('You do not own any warehouses')
+    }
     warehouses.forEach((warehouse) => {
         if (warehouse.leasePeriod) {
             const dueDate = { name: warehouse.name, validity:moment(warehouse.leasePeriod).diff(moment(), format), leaseExpired: false  }
