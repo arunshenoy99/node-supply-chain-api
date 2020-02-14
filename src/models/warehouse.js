@@ -46,6 +46,12 @@ const warehouseSchema = new mongoose.Schema({
     timestamps: true
 })
 
+warehouseSchema.methods.toJSON = function () {
+    const warehouse = this.toObject()
+    warehouse.location = `https://www.google.com/maps?q=${warehouse.location.latitude},${warehouse.location.longitude}`
+    return warehouse
+}
+
 const Warehouse = mongoose.model('Warehouse', warehouseSchema)
 
 module.exports = Warehouse

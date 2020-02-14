@@ -62,6 +62,7 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+    next()
 })
 
 userSchema.methods.generateAuthToken = async function () {
@@ -98,7 +99,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.pre('remove', async function (next) {
     const user = this
-    const warehouses = await Warehouse.updateMany({owner: user._id}, {owner: undefined})
+    await Warehouse.updateMany({owner: user._id}, {owner: undefined})
     next()
 })
 
