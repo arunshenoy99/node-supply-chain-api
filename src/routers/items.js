@@ -2,6 +2,7 @@ const express = require('express')
 const Item = require('../models/item')
 const auth = require('../middleware/auth')
 const Warehouse = require('../models/warehouse')
+const Transaction = require('../models/transaction')
 
 const router = new express.Router()
 
@@ -61,5 +62,52 @@ router.get('/items', async (req, res) => {
         res.status(400).send()
     }
 })
+
+//Checkout from cart
+router.post('/items/checkout', auth, async (req, res) => {
+    try {
+        req.body.forEach(async (reqItem) => {
+            const item = await Item.findOne(reqItem)
+            if (!item) {
+                return res.status(404).send()
+            }
+            const transaction = new Transaction({
+                item: item._id,
+                buyer: req.user._id,
+                status: 'Order recieved'
+            }) 
+            await transaction.save()
+            res.status(200).send()
+        })
+    } catch (e) {
+        res.status(400).send()
+    } 
+})
+
+//Track purchased items
+router.get('/items/me', auth, async (req, res) => {
+    try {
+        await req.user.populate({
+            path: 'items'
+        }).execPopulate()
+        res.send(req.user.items)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+//Cancel an order
+router.post('/items/me/:id', auth, async (req, res) => {
+    try {
+        const transaction = await Transaction.findById(req.params.id)
+        transaction.status = "Cancelled"
+        await transaction.save()
+        res.send(transaction)
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
+
 
 module.exports = router

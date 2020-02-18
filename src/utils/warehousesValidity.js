@@ -12,7 +12,7 @@ const warehousesValidity = async (user, format) => {
     }
     warehouses.forEach((warehouse) => {
         if (warehouse.leasePeriod) {
-            const dueDate = { name: warehouse.name, validity:moment(warehouse.leasePeriod).diff(moment(), format), leaseExpired: false  }
+            const dueDate = { name: warehouse.name, validity: moment(warehouse.leasePeriod).diff(moment(), format), leaseExpired: false  }
             if (dueDate.validity < 0) {
                 dueDate.leaseExpired = true
             }

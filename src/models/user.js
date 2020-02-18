@@ -52,7 +52,7 @@ userSchema.virtual('warehouses', {
 })
 
 userSchema.virtual('items', {
-    ref: 'Item',
+    ref: 'Transaction',
     localField: '_id',
     foreignField: 'buyer'
 })
