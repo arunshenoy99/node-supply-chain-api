@@ -11,6 +11,13 @@ const transactionSchema = new mongoose.Schema({
     },
     status: {
         type: 'String'
+    },
+    locatedAt: {
+        type: 'String'
+    },
+    quantity: {
+        type: Number,
+        default: 1
     }
 })
 

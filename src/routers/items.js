@@ -71,11 +71,26 @@ router.post('/items/checkout', auth, async (req, res) => {
             if (!item) {
                 return res.status(404).send()
             }
+            if (item.quantity == 0) {
+                return res.status(400).send()
+            }
+            if (reqItem.quantity) {
+                item.quantity = item.quantity - reqItem.quantity
+            } else {
+                reqItem.quantity = 1
+                item.quantity = item.quantity -1
+            }
+            const warehouse = await Warehouse.findById(item.locatedAt)
+            const warehouseJSON = warehouse.toJSON()
+            const locatedAt = warehouseJSON.location
             const transaction = new Transaction({
                 item: item._id,
                 buyer: req.user._id,
-                status: 'Order recieved'
+                status: 'Order recieved',
+                locatedAt,
+                quantity: reqItem.quantity
             }) 
+            await item.save()
             await transaction.save()
             res.status(200).send()
         })
@@ -100,14 +115,18 @@ router.get('/items/me', auth, async (req, res) => {
 router.post('/items/me/:id', auth, async (req, res) => {
     try {
         const transaction = await Transaction.findById(req.params.id)
+        if (transaction.status == "Cancelled") {
+            return res.send(transaction)
+        }
+        const item = await Item.findById(transaction.item)
+        item.quantity = item.quantity + transaction.quantity
         transaction.status = "Cancelled"
         await transaction.save()
+        await item.save()
         res.send(transaction)
     } catch (e) {
         res.status(400).send()
     }
 })
-
-
 
 module.exports = router
